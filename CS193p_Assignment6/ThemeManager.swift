@@ -25,22 +25,26 @@ struct ThemeManager: View {
                     NavigationLink(destination: getMemorizeGame(theme: theme)) {
                         themeItemRow(theme: theme)
                     }
+                    .gesture(editMode == .active ? tapToEditThemeItem(theme: theme) : nil)
+                }
+                .onDelete { indexSet in
+                    indexSet.forEach { store.removeTheme(at: $0) }
+                }
+                .onMove { fromOffsets, toOffset in
+                    store.themes.move(fromOffsets: fromOffsets, toOffset: toOffset)
                 }
             }
-            
+            .navigationTitle("Memorize Card Game")
+            .sheet(item: $themeToEdit) { theme in
+                ThemeEditor(theme: $store.themes[theme])
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) { addThemeButton }
+                ToolbarItem { EditButton() }
+            }
+            .environment(\.editMode, $editMode)
         }
         
-    }
-    
-    private func emojis (from theme: Theme) -> String {
-        
-        var emojiString = ""
-        
-        theme.emojiSet.forEach() { emoji in
-            emojiString += emoji
-        }
-        
-        return emojiString
     }
     
     private func themeItemRow(theme: Theme) -> some View {
@@ -49,11 +53,12 @@ struct ThemeManager: View {
                 .foregroundColor(Color(rgbaColor: theme.color))
             HStack {
                 if theme.numberOfPairs == theme.emojiSet.count {
-                    Text("All of \(emojis(from: theme))")
+                    Text("All of \(theme.emojis)")
                 } else {
-                    Text("\(String(theme.numberOfPairs)) pairs from \(emojis(from: theme))")
+                    Text("\(String(theme.numberOfPairs)) pairs from \(theme.emojis)")
                 }
             }
+            .lineLimit(1)
         }
     }
     
@@ -68,10 +73,35 @@ struct ThemeManager: View {
         return EmojiMemoryGameView(game: allThemeGames[theme]!)
     }
     
+    // MARK: Editing/Adding
+    
+    @State private var themeToEdit: Theme?
+    
+    private func tapToEditThemeItem(theme: Theme) -> some Gesture {
+        TapGesture()
+            .onEnded {
+                themeToEdit = store.themes[theme]
+            }
+    }
+    
+    
+    
+    private var addThemeButton: some View {
+        Button {
+            store.insertTheme(named: "New")
+            themeToEdit = store.themes.first
+        } label: {
+            Text("Add theme")
+            Image(systemName: "plus.circle")
+                .font(.system(size: 10))
+        }
+    }
+    
 }
 
 struct ThemeManager_Previews: PreviewProvider {
     static var previews: some View {
         ThemeManager()
+            .environmentObject(ThemeStore(named: "Preview"))
     }
 }

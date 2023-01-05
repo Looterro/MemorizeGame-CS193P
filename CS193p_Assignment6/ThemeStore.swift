@@ -17,10 +17,22 @@ struct Theme: Codable, Identifiable, Hashable {
     init(name: String, emojiSet: [String], numberOfPairs: Int, color: RGBAColor, id: Int) {
         self.name = name
         self.emojiSet = emojiSet
-        //Defend against number being higher than emojiSet array length
+        //Protect against number being higher than emojiSet array length
         self.numberOfPairs = numberOfPairs > emojiSet.count ? emojiSet.count : numberOfPairs
         self.color = color
         self.id = id
+    }
+    
+    //convert set of emojis to string
+    var emojis: String {
+        
+        var emojiString = ""
+        
+        emojiSet.forEach() { emoji in
+            emojiString += emoji
+        }
+        
+        return emojiString
     }
 }
 
@@ -60,6 +72,7 @@ class ThemeStore: ObservableObject {
     }
     
     //Doesnt allow for removing a theme file if there is only one left
+    @discardableResult
     func removeTheme(at index: Int) -> Int {
         if themes.count > 1, themes.indices.contains(index) {
             themes.remove(at: index)
