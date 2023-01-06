@@ -13,6 +13,9 @@ import SwiftUI
 // Observable objects notifies that something changed in the logic
 class EmojiMemoryGame: ObservableObject {
     
+    //typealias is not private, so it can be used in EmojiMemoryGameView
+    typealias Card = MemoryGame<String>.Card
+    
     init(theme: Theme) {
 //        self.theme = EmojiMemoryGame.themes.randomElement()!
 //        self.theme.numberOfPairs = Int.random(in: 4 ..< theme.emojiSet.count)
