@@ -15,3 +15,5 @@ https://user-images.githubusercontent.com/73793088/211008750-8051936c-1d56-414b-
 - The game grants 2 points for each match, and adding one extra point for match made in a specific time period which is shown on every card with circle elapsing animation. If a user taps on the previously seen card one point is substracted.
 
 - The game uses binding, environmentObjects, multiple viewModels, animation and extensions
+
+- The UI is adjusted to make good use of space in iPads and iPhones
