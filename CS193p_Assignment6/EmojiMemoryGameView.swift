@@ -21,12 +21,14 @@ struct EmojiMemoryGameView: View {
             HStack {
                 Text("Theme: \(game.themeName())")
                     .padding()
-                    .font(.title)
+                    .font(.title2)
                 Spacer()
                 Text("Score: \(game.score())")
                     .padding()
-                    .font(.title)
+                    .font(.title2)
             }
+            .navigationBarTitleDisplayMode(.inline)
+
             
             //Check if all cards are matched and if so display "Game Over"
             if !game.cards.allSatisfy(\.isMatched) {
@@ -66,7 +68,7 @@ struct EmojiMemoryGameView: View {
                 game.newGame()
             } label: {
                 Text("New Game")
-                    .font(.largeTitle)
+                    .font(.title)
             }
         }
     }

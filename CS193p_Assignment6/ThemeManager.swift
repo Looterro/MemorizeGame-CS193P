@@ -80,6 +80,7 @@ struct ThemeManager: View {
     private func tapToEditThemeItem(theme: Theme) -> some Gesture {
         TapGesture()
             .onEnded {
+                print(allThemeGames)
                 themeToEdit = store.themes[theme]
             }
     }

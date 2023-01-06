@@ -46,10 +46,30 @@ struct RGBAColor: Codable, Equatable, Hashable {
 class ThemeStore: ObservableObject {
     let name: String
     
-    @Published var themes = [Theme]()
+    @Published var themes = [Theme]() {
+        //autosave the changes for another session
+        didSet {
+            storeInUserDefaults()
+        }
+    }
+    
+    private var userDefaultsKey: String {
+        "PaletteStore:" + name
+    }
+    
+    private func storeInUserDefaults() {
+        UserDefaults.standard.set(try? JSONEncoder().encode(themes), forKey: userDefaultsKey)
+    }
+    
+    private func restoreFromUserDefaults() {
+        if let jsonData = UserDefaults.standard.data(forKey: userDefaultsKey), let decodedThemes = try? JSONDecoder().decode([Theme].self, from: jsonData) {
+            themes = decodedThemes
+        }
+    }
     
     init(named name: String) {
         self.name = name
+        restoreFromUserDefaults()
         
         if themes.isEmpty {
             print("Using built-in themes")

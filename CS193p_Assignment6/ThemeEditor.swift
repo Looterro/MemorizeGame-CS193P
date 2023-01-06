@@ -19,15 +19,35 @@ struct ThemeEditor: View {
     }
     
     var body: some View {
-        Form {
-            nameSection
-            addEmojisSection
-            removeEmojisSection
-            numberOfPairsSection
-            colorSection
+        NavigationView {
+            
+            Form {
+                nameSection
+                addEmojisSection
+                removeEmojisSection
+                numberOfPairsSection
+                colorSection
+            }
+            .navigationTitle("Editing \(theme.name)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    closeButton
+                }
+            }
+            
         }
-        .navigationTitle("\(theme.name)")
     }
+    
+    var closeButton: some View {
+        Button("Close") {
+            if presentationMode.wrappedValue.isPresented {
+                presentationMode.wrappedValue.dismiss()
+            }
+        }
+    }
+    
+    //MARK: - Form inputs and functions
     
     var nameSection: some View {
         Section(header: Text("Theme name")) {
@@ -38,7 +58,7 @@ struct ThemeEditor: View {
     @State private var emojisToAdd = ""
     
     var addEmojisSection: some View {
-        Section(header: Text("Add emojis")) {
+        Section(header: Text("Input emojis to add")) {
             TextField("", text: $emojisToAdd)
                 //on change insert emojis to given theme
                 .onChange(of: emojisToAdd) { emojis in
@@ -62,7 +82,7 @@ struct ThemeEditor: View {
     }
     
     var removeEmojisSection: some View {
-        Section(header: Text("Remove emojis")) {
+        Section(header: Text("Tap to remove emojis")) {
             let emojis = theme.emojiSet
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 40))]) {
                 ForEach(emojis, id: \.self) { emoji in
@@ -85,7 +105,7 @@ struct ThemeEditor: View {
         }
     }
     
-    @State var chosenColor: Color = .red
+    @State var chosenColor: Color
     
     var colorSection: some View {
         Section(header: Text("Pick Color")) {
